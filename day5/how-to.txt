@@ -1,0 +1,72 @@
+Requisitos:
+		- Linux
+		- 2GB+ por máquina
+		- 2 CPUs+
+		- Conexão de rede
+		- Portas:
+				- 6443 - K8S Api server
+				- 10250 até 10255 - kubelet
+				- 30000 até 32767 - NodePort
+				- 2379 e 2380 - etcd
+
+-------------------- HOW TO ON AWS  ----------------------------------
+  - subir instâncias EC2
+  - mínimo de 3 instâncias para um clusters marotinho
+  - t2.medium resolve o problema 
+  - criar/usar uma chave ssh para acessar os nodes
+  - 2 nodes serão workers e 1 será control plane 
+  - mudar o security group para abrir as portas necessárias
+  - colocar para apenas o security group acessar essas portas
+
+-------------------- DENTRO DA MÁQUINA ----------------------------------
+  - mudar o hostname das máquinas e desativar o swap 
+  
+  - habilitar os módulos do kernel que queremos disponíveis no arquivo k8s.conf (overlay,
+	br_netfilter)
+  
+  - path: /etc/modules-load.d/k8s.conf
+  
+  - sudo modprobe overlay e sudo modprobe br_netfilter
+  
+  - criar um arquivo de config de sistema pro K8S
+  
+  - habilitar o net.bridge.bridge-nf-call-iptables e ip6tables com o valor de 1 
+  
+  - habilitar o net.ipv4.ip_forward com o valor de 1 também 
+  
+  - reler o arquivo de configuração com sudo sysctl --system
+  
+  - apt-get update e apt-get install apt-transport-https curl 
+  
+  - adicionar o repo do K8S (deb https://apt.kubernetes.io/
+	kubernetes-xenial main)
+  
+  - path: /etc/apt/sources-list.d/k8s.list
+  
+  - sudo apt-get update
+  
+  - instalar os pacotes do k8s (kubeadm, kubelet e kubectl)
+  
+  - proibir esses pacotes de serem atualizados automaticamente com sudo apt-mark
+	hold kubelet kubeadm kubectl
+  
+  - instalar o container runtime (containerd) pra poder brincar e se divertir 
+
+  - sudo apt-get install gnupg lsb-release ca-certificates
+
+  - adicionar o repo do docker 
+
+  - sudo apt-get update e sudo apt-get install containerd.io
+
+  - configurar o containerd e seu cgroup 
+
+  - para gerar essa config sudo containerd config default | sudo tee /etc/containerd/config.toml
+
+  - habilitar o systemdCgroup para true com sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/g' /etc/containerd/config.toml
+
+  - reiniciar o containerd com sudo systemctl restart containerd e habilitar o
+	serviço com sudo systemctl enable containerd 
+
+  - iniciar o kubelet com sudo systemctl enable --now kubelet 
+
+
