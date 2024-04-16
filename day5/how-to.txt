@@ -8,6 +8,8 @@ Requisitos:
 				- 10250 até 10255 - kubelet
 				- 30000 até 32767 - NodePort
 				- 2379 e 2380 - etcd
+				- 6783/tcp - weave net
+				- 6783-6784/udp - weave net
 
 -------------------- HOW TO ON AWS  ----------------------------------
   - subir instâncias EC2
@@ -69,4 +71,31 @@ Requisitos:
 
   - iniciar o kubelet com sudo systemctl enable --now kubelet 
 
+--------------------------- INICIALIZAÇÃO DO CONTROL PLANE (INICIALIZAÇÃO DO CLUSTER) ----------------------------------------------------------
 
+  - sudo kubeadm init --pod-network-cidr=rede.que.voce.deseja --apiserver-advertise-address=ip.da.maquina
+
+  - o control plane vai fazer o download dos componentes necessários para
+	executar o kluster
+
+  - o kubeadm pede para executar 3 comandos em sequência para criar uma config
+	para o kubernetes
+
+  - criando essa config esse node do control plane estará pronto 
+
+------------------------- INICIALIZAÇÃO DOS WORKERS -----------------------------------------------------------------------
+
+  - quando o control plane for configurado ele trará um comando para ser
+	executado nos workers para que eles possam estar configurados 
+
+  - sudo kubeadm join IP_DO_CP:6443 --token token-de-config --discovery-token-ca-cert-hash sha256:valor-do-certificado
+
+  - agora com os clusters configurados temos que configurar o plugin de rede
+	para que eles possam se comunicar 
+
+  - nesse exemplo será usado o weave-net, porque o k8s não resolve as redes dos
+	pods então teremos que utilizar um plugin de rede para mexer nessa bagaceira 
+
+  - kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+
+  - agora os nodes já estarão prontos para serem utilizados 
