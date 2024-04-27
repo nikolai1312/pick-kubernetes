@@ -1,0 +1,19 @@
+-------------------------- HOW TO USE NFS AS K8S PV ------------------------
+NFS -> Network File System, um file system que pode ser compartilhado através da
+rede. 
+
+
+   Programas necessários:
+     - nfs-kernel-server
+	 - nfs-common
+----------------------------------------------------------------------------
+
+1. Instalar esses pacotes
+
+2. Configurar o arquivo /etc/exports de acordo com a necessidade
+
+3. Rodar o comando sudo exportfs -ar para indicar ao nfs que o arquivo de config
+foi alterado
+
+4. rodar o comando showmount -e para checar se o diretório está sendo
+compartilhado na rede 
