@@ -1,0 +1,13 @@
+services servem para que os pods possam ser expostos para a rede 
+
+se atentar às labels, pois todos os recursos do K8S utilizam labels
+
+as services usam as labels para gerenciar as requisições e os recursos 
+
+quando um serviço é criado um endpoint também é criado, o endpoint é o IP que serve para apontar diretamente para os pods 
+
+o service possui diferentes tipos, por exemplo
+
+clusterIP => ganha um IP que será usado dentro do cluster e poderá ser visto somente dentro do cluster 
+
+nodePort => o nodePort 
